@@ -42,10 +42,7 @@ router.delete('/:id',async(req,res)=>
 {
     try
    {
-        const student = await Student.findById(req.params.id) 
-        if (!student) return res.status(404).json({message: 'Student not found'});
-        await student.deleteOne();
-        res.json({message: 'Student Deleted'});  
+    const student = await Student.deleteOne({ _id: req.params.id }); 
     }
 catch(err)
    {
@@ -57,19 +54,10 @@ router.patch('/:id',async(req,res)=>
     {
         try
        {
-        const student = await Student.findById(req.params.id);
-        
-        if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
-        }
-
-        // Iterate over the request body keys and update the corresponding student fields
-        Object.keys(req.body).forEach(key => {
-            student[key] = req.body[key];
-        });
-
-        const updatedStudent = await student.save();
-        res.json(updatedStudent);
+        const student = await person.findById(req.params.id);
+        student.S_id = req.body.S_id;
+        const a = await student.save();
+        res.json(a);
    
         }
     catch(err)
