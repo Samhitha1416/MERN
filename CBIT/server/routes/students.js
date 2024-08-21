@@ -16,6 +16,21 @@ router.get('/', async(req,res) =>
     }
 })
 
+router.get('/:id', async(req,res) => 
+{
+    try
+    {
+           const student = await Student.findById(req.params.id)
+           res.json(student)
+    }
+
+catch(err)
+{
+        res.send('Error ' + err)
+    }
+})
+
+
 router.post('/', async(req,res) => 
 {
     const student = new Student
@@ -23,8 +38,8 @@ router.post('/', async(req,res) =>
         name: req.body.name,
         tech: req.body.tech,
         sub: req.body.sub,
-        year: req.body.year,
-        age:req.body.age
+        rollno: req.body.rollno,
+        branch: req.body.branch
     })
 
     try
@@ -38,27 +53,15 @@ catch(err)
     }
 })
 
-router.delete('/:id',async(req,res)=> 
-{
-    try
-   {
-    const student = await Student.deleteOne({ _id: req.params.id }); 
-    }
-catch(err)
-   {
-        res.send('Error')
-    }
-
-})
 router.patch('/:id',async(req,res)=> 
     {
         try
        {
-        const student = await person.findById(req.params.id);
-        student.S_id = req.body.S_id;
-        const a = await student.save();
-        res.json(a);
-   
+        const student = await Student.findById(req.params.id);
+        if (!student) return res.status(404).send('Student not found');
+        Object.assign(student, req.body);
+        const updatedStudent = await student.save();
+        res.json(updatedStudent);
         }
     catch(err)
        {
@@ -66,5 +69,15 @@ router.patch('/:id',async(req,res)=>
         }
     
     })
+
+router.delete("/:id", async (req, res) => {
+    try {
+      const student = await Student.deleteOne({ _id: req.params.id });
+      res.json(student)
+    } catch (err) {
+      res.send("Error");
+    }
+  });
+  
 
 module.exports = router
